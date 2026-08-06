@@ -1,0 +1,76 @@
+{
+  "sourceSystem": "BambooHR API",
+  "fetchedAt": "2026-03-13T19:21:25.581Z",
+  "employees": [
+    {
+      "id": "124",
+      "firstName": "Drashti",
+      "lastName": "Maheswari",
+      "displayName": "Drashti Maheswari",
+      "workEmail": "drashtimaheswari20@gmail.com",
+      "role": "",
+      "department": "",
+      "location": "",
+      "hireDate": "2004-03-01",
+      "supervisor": "",
+      "supervisorId": null,
+      "source": "bamboohr"
+    },
+    {
+      "id": "121",
+      "firstName": "Nihar",
+      "lastName": "Mehta",
+      "displayName": "Nihar Mehta",
+      "workEmail": "niharmehta245@gmail.com",
+      "role": "IT Security Engineer",
+      "department": "IT",
+      "location": "Dublin, Ireland",
+      "hireDate": "2026-01-01",
+      "supervisor": "Eckerly, Aaron",
+      "supervisorId": "32",
+      "source": "bamboohr"
+    },
+    {
+      "id": "8",
+      "firstName": "Harsh",
+      "lastName": "Shah",
+      "displayName": "Harsh Shah",
+      "workEmail": "harshdshah333@gmail.com",
+      "role": "",
+      "department": "Operations",
+      "location": "Dublin, Ireland",
+      "hireDate": "2022-09-02",
+      "supervisor": "",
+      "supervisorId": null,
+      "source": "bamboohr"
+    },
+    {
+      "id": "122",
+      "firstName": "Nikhil",
+      "lastName": "Solanki",
+      "displayName": "Nikhil Solanki",
+      "workEmail": "nikhilsolanki9876@gmail.com",
+      "role": "",
+      "department": "",
+      "location": "",
+      "hireDate": "2026-03-01",
+      "supervisor": "",
+      "supervisorId": null,
+      "source": "bamboohr"
+    },
+    {
+      "id": "118",
+      "firstName": "Parth",
+      "lastName": "Srivastava",
+      "displayName": "Parth Srivastava",
+      "workEmail": "parth.srivastava660@gmail.com",
+      "role": "HR Specialist",
+      "department": "",
+      "location": "",
+      "hireDate": "2026-03-13",
+      "supervisor": "Shah, Harsh",
+      "supervisorId": "5",
+      "source": "bamboohr"
+    }
+  ]
+}

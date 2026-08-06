@@ -1,0 +1,286 @@
+{
+  "sourceSystem": "Mock HR meeting transcript seeds",
+  "fetchedAt": "2026-03-13T19:21:26.822Z",
+  "meetings": [
+    {
+      "meetingId": "harshdshah333@gmail.com:latest",
+      "employeeEmail": "harshdshah333@gmail.com",
+      "meeting_brief": {
+        "previous_meeting": "HR and Engagement Review",
+        "date": "2026-03-13",
+        "meeting_objective": "Conduct a structured HR check-in and capture actions for growth and wellbeing.",
+        "attendees": [
+          {
+            "name": "HR",
+            "role": "HR"
+          },
+          {
+            "name": "Harsh Shah",
+            "role": "Employee"
+          }
+        ],
+        "key_takeaways": [
+          "Harsh Shah discussed current workload and team priorities for the coming sprint.",
+          "HR and Harsh Shah aligned on growth expectations for the current role.",
+          "An action plan was agreed with follow-up checkpoints for Operations."
+        ]
+      },
+      "transcript": [
+        {
+          "timestamp": "00:00:00",
+          "speaker": "HR",
+          "text": "Hi Harsh Shah, thanks for joining this 1:1 check-in. We want to review your current experience in Operations."
+        },
+        {
+          "timestamp": "00:00:20",
+          "speaker": "Harsh Shah",
+          "text": "Thanks. Overall things are going well, but I want clearer weekly priorities for my team role responsibilities."
+        },
+        {
+          "timestamp": "00:00:45",
+          "speaker": "HR",
+          "text": "That makes sense. Are there any blockers or support areas we should address immediately?"
+        },
+        {
+          "timestamp": "00:01:10",
+          "speaker": "Harsh Shah",
+          "text": "A structured planning sync and clearer ownership boundaries would help reduce confusion."
+        },
+        {
+          "timestamp": "00:01:35",
+          "speaker": "HR",
+          "text": "Noted. We will capture action items, align with your manager, and set a follow-up date."
+        },
+        {
+          "timestamp": "00:01:55",
+          "speaker": "Harsh Shah",
+          "text": "That sounds good. I appreciate the support and follow-up plan."
+        }
+      ]
+    },
+    {
+      "meetingId": "niharmehta245@gmail.com:latest",
+      "employeeEmail": "niharmehta245@gmail.com",
+      "meeting_brief": {
+        "previous_meeting": "HR and Engagement Review",
+        "date": "2026-03-13",
+        "meeting_objective": "Conduct a structured HR check-in and capture actions for growth and wellbeing.",
+        "attendees": [
+          {
+            "name": "HR",
+            "role": "HR"
+          },
+          {
+            "name": "Nihar Mehta",
+            "role": "Employee"
+          }
+        ],
+        "key_takeaways": [
+          "Nihar Mehta discussed current workload and team priorities for the coming sprint.",
+          "HR and Nihar Mehta aligned on growth expectations for the IT Security Engineer role.",
+          "An action plan was agreed with follow-up checkpoints for IT."
+        ]
+      },
+      "transcript": [
+        {
+          "timestamp": "00:00:00",
+          "speaker": "HR",
+          "text": "Hi Nihar Mehta, thanks for joining this 1:1 check-in. We want to review your current experience in IT."
+        },
+        {
+          "timestamp": "00:00:20",
+          "speaker": "Nihar Mehta",
+          "text": "Thanks. Overall things are going well, but I want clearer weekly priorities for my IT Security Engineer responsibilities."
+        },
+        {
+          "timestamp": "00:00:45",
+          "speaker": "HR",
+          "text": "That makes sense. Are there any blockers or support areas we should address immediately?"
+        },
+        {
+          "timestamp": "00:01:10",
+          "speaker": "Nihar Mehta",
+          "text": "A structured planning sync and clearer ownership boundaries would help reduce confusion."
+        },
+        {
+          "timestamp": "00:01:35",
+          "speaker": "HR",
+          "text": "Noted. We will capture action items, align with your manager, and set a follow-up date."
+        },
+        {
+          "timestamp": "00:01:55",
+          "speaker": "Nihar Mehta",
+          "text": "That sounds good. I appreciate the support and follow-up plan."
+        }
+      ]
+    },
+    {
+      "meetingId": "nikhilsolanki9876@gmail.com:latest",
+      "employeeEmail": "nikhilsolanki9876@gmail.com",
+      "meeting_brief": {
+        "previous_meeting": "HR and Engagement Review",
+        "date": "2026-03-13",
+        "meeting_objective": "Conduct a structured HR check-in and capture actions for growth and wellbeing.",
+        "attendees": [
+          {
+            "name": "HR",
+            "role": "HR"
+          },
+          {
+            "name": "Nikhil Solanki",
+            "role": "Employee"
+          }
+        ],
+        "key_takeaways": [
+          "Nikhil Solanki discussed current workload and team priorities for the coming sprint.",
+          "HR and Nikhil Solanki aligned on growth expectations for the current role.",
+          "An action plan was agreed with follow-up checkpoints for the team."
+        ]
+      },
+      "transcript": [
+        {
+          "timestamp": "00:00:00",
+          "speaker": "HR",
+          "text": "Hi Nikhil Solanki, thanks for joining this 1:1 check-in. We want to review your current experience in team."
+        },
+        {
+          "timestamp": "00:00:20",
+          "speaker": "Nikhil Solanki",
+          "text": "Thanks. Overall things are going well, but I want clearer weekly priorities for my team role responsibilities."
+        },
+        {
+          "timestamp": "00:00:45",
+          "speaker": "HR",
+          "text": "That makes sense. Are there any blockers or support areas we should address immediately?"
+        },
+        {
+          "timestamp": "00:01:10",
+          "speaker": "Nikhil Solanki",
+          "text": "A structured planning sync and clearer ownership boundaries would help reduce confusion."
+        },
+        {
+          "timestamp": "00:01:35",
+          "speaker": "HR",
+          "text": "Noted. We will capture action items, align with your manager, and set a follow-up date."
+        },
+        {
+          "timestamp": "00:01:55",
+          "speaker": "Nikhil Solanki",
+          "text": "That sounds good. I appreciate the support and follow-up plan."
+        }
+      ]
+    },
+    {
+      "meetingId": "drashtimaheswari20@gmail.com:latest",
+      "employeeEmail": "drashtimaheswari20@gmail.com",
+      "meeting_brief": {
+        "previous_meeting": "HR and Engagement Review",
+        "date": "2026-03-13",
+        "meeting_objective": "Conduct a structured HR check-in and capture actions for growth and wellbeing.",
+        "attendees": [
+          {
+            "name": "HR",
+            "role": "HR"
+          },
+          {
+            "name": "Drashti Maheswari",
+            "role": "Employee"
+          }
+        ],
+        "key_takeaways": [
+          "Drashti Maheswari discussed current workload and team priorities for the coming sprint.",
+          "HR and Drashti Maheswari aligned on growth expectations for the current role.",
+          "An action plan was agreed with follow-up checkpoints for the team."
+        ]
+      },
+      "transcript": [
+        {
+          "timestamp": "00:00:00",
+          "speaker": "HR",
+          "text": "Hi Drashti Maheswari, thanks for joining this 1:1 check-in. We want to review your current experience in team."
+        },
+        {
+          "timestamp": "00:00:20",
+          "speaker": "Drashti Maheswari",
+          "text": "Thanks. Overall things are going well, but I want clearer weekly priorities for my team role responsibilities."
+        },
+        {
+          "timestamp": "00:00:45",
+          "speaker": "HR",
+          "text": "That makes sense. Are there any blockers or support areas we should address immediately?"
+        },
+        {
+          "timestamp": "00:01:10",
+          "speaker": "Drashti Maheswari",
+          "text": "A structured planning sync and clearer ownership boundaries would help reduce confusion."
+        },
+        {
+          "timestamp": "00:01:35",
+          "speaker": "HR",
+          "text": "Noted. We will capture action items, align with your manager, and set a follow-up date."
+        },
+        {
+          "timestamp": "00:01:55",
+          "speaker": "Drashti Maheswari",
+          "text": "That sounds good. I appreciate the support and follow-up plan."
+        }
+      ]
+    },
+    {
+      "meetingId": "parth.srivastava660@gmail.com:latest",
+      "employeeEmail": "parth.srivastava660@gmail.com",
+      "meeting_brief": {
+        "previous_meeting": "HR and Engagement Review",
+        "date": "2026-03-13",
+        "meeting_objective": "Conduct a structured HR check-in and capture actions for growth and wellbeing.",
+        "attendees": [
+          {
+            "name": "HR",
+            "role": "HR"
+          },
+          {
+            "name": "Parth Srivastava",
+            "role": "Employee"
+          }
+        ],
+        "key_takeaways": [
+          "Parth Srivastava discussed current workload and team priorities for the coming sprint.",
+          "HR and Parth Srivastava aligned on growth expectations for the HR Specialist role.",
+          "An action plan was agreed with follow-up checkpoints for the team."
+        ]
+      },
+      "transcript": [
+        {
+          "timestamp": "00:00:00",
+          "speaker": "HR",
+          "text": "Hi Parth Srivastava, thanks for joining this 1:1 check-in. We want to review your current experience in team."
+        },
+        {
+          "timestamp": "00:00:20",
+          "speaker": "Parth Srivastava",
+          "text": "Thanks. Overall things are going well, but I want clearer weekly priorities for my HR Specialist responsibilities."
+        },
+        {
+          "timestamp": "00:00:45",
+          "speaker": "HR",
+          "text": "That makes sense. Are there any blockers or support areas we should address immediately?"
+        },
+        {
+          "timestamp": "00:01:10",
+          "speaker": "Parth Srivastava",
+          "text": "A structured planning sync and clearer ownership boundaries would help reduce confusion."
+        },
+        {
+          "timestamp": "00:01:35",
+          "speaker": "HR",
+          "text": "Noted. We will capture action items, align with your manager, and set a follow-up date."
+        },
+        {
+          "timestamp": "00:01:55",
+          "speaker": "Parth Srivastava",
+          "text": "That sounds good. I appreciate the support and follow-up plan."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "pdpu",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "analyze:retention": "node server/scripts/runLlmRetentionRisk.js",
+    "analyze:health": "node server/scripts/runLlmHealthScore.js",
+    "analyze:brief": "node server/scripts/runLlmMeetingBrief.js",
+    "simulate:ai-flow": "node server/scripts/runAiFlowSimulation.js",
+    "db:init": "node server/scripts/initMongoSchema.js",
+    "db:sync-slack": "node server/scripts/upsertSlackMessages.js",
+    "fetch:selected-sources": "node server/scripts/fetchSelectedSources.js",
+    "start:server": "node server/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "dependencies": {
+    "@slack/web-api": "^7.15.0",
+    "bullmq": "^5.12.13",
+    "dotenv": "^17.3.1",
+    "express": "^4.21.2",
+    "groq-sdk": "^1.1.1",
+    "ioredis": "^5.4.1",
+    "mongodb": "^6.9.0",
+    "zod": "^3.23.8"
+  }
+}

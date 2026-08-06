@@ -1,0 +1,80 @@
+{
+  "general": [
+    {
+      "userId": "U0ALBGWNETY",
+      "text": "<@U0AM82M3QAC> aap kam nai krte toh stress me chle gye",
+      "timestamp": "1773394006.679009",
+      "threadTs": null,
+      "reactions": [],
+      "realName": "Harsh Shah"
+    },
+    {
+      "userId": "U0AM82M3QAC",
+      "text": "<@U0ALBGWNETY> aapke baal kidhr h",
+      "timestamp": "1773393993.303569",
+      "threadTs": null,
+      "reactions": [],
+      "realName": "Parth Srivastava"
+    },
+    {
+      "userId": "U0ALBGWNETY",
+      "text": "<@U0ALS92J3NV> kaam kar na",
+      "timestamp": "1773392287.498559",
+      "threadTs": null,
+      "reactions": [],
+      "realName": "Harsh Shah"
+    }
+  ],
+  "random": [],
+  "members": [
+    {
+      "userId": "U0ALBGWNETY",
+      "name": "harshdshah333",
+      "realName": "Harsh Shah",
+      "displayName": "Harsh Shah",
+      "email": "harshdshah333@gmail.com",
+      "profileImage": "https://avatars.slack-edge.com/2026-03-13/10721899696016_af0fb4284aaee2e5d136_192.jpg"
+    },
+    {
+      "userId": "U0ALRQC7525",
+      "name": "niharmehta245",
+      "realName": "niharmehta245",
+      "displayName": "niharmehta245",
+      "email": "niharmehta245@gmail.com",
+      "profileImage": "https://secure.gravatar.com/avatar/a5bc3739fea02c7de5cbcba4ceb906cc.jpg?s=192&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-192.png"
+    },
+    {
+      "userId": "U0ALS92J3NV",
+      "name": "nikhilsolanki9876",
+      "realName": "Nikhil Solanki",
+      "displayName": "Nikhil Solanki",
+      "email": "nikhilsolanki9876@gmail.com",
+      "profileImage": "https://avatars.slack-edge.com/2026-03-13/10691345754022_9558b9484ee41bc276a3_192.jpg"
+    },
+    {
+      "userId": "U0AM7JQC132",
+      "name": "drashtimaheswari20",
+      "realName": "Drashti Maheshwari",
+      "displayName": "Drashti Maheshwari",
+      "email": "drashtimaheswari20@gmail.com",
+      "profileImage": "https://avatars.slack-edge.com/2026-03-13/10689941176629_97be8da30d1d6e28cfa1_192.png"
+    },
+    {
+      "userId": "U0AM82M3QAC",
+      "name": "parth.srivastava660",
+      "realName": "Parth Srivastava",
+      "displayName": "Parth Srivastava",
+      "email": "parth.srivastava660@gmail.com",
+      "profileImage": "https://avatars.slack-edge.com/2026-03-13/10687431723379_cfb87e4d1eebdf23f774_192.png"
+    }
+  ],
+  "summary": {
+    "totalMessages": 3,
+    "messagesByMember": {
+      "Harsh Shah": 2,
+      "Parth Srivastava": 1
+    },
+    "mostActiveChannel": "#general",
+    "fetchedAt": "2026-03-13T10:36:45.613Z"
+  }
+}
