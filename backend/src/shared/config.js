@@ -7,7 +7,9 @@ function loadConfig() {
   const candidates = [
     path.join(process.cwd(), '.env'),
     // When node is started from the repository root, resolve the gateway .env
-    path.join(__dirname, '..', '..', '.env')
+    path.join(__dirname, '..', '..', '.env'),
+    // When node is started from the backend package, resolve the repo root .env
+    path.join(__dirname, '..', '..', '..', '..', '..', '.env')
   ];
 
   // eslint-disable-next-line global-require

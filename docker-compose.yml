@@ -17,7 +17,7 @@ services:
     image: node:20
     working_dir: /workspace
     volumes:
-      - ./services/api-gateway/backend:/workspace
+      - ./backend:/workspace
     command: sh -c "npm install && npm run dev"
     ports:
       - "4000:4000"
@@ -33,7 +33,7 @@ services:
     image: node:20
     working_dir: /workspace
     volumes:
-      - ./services/ai-orchestrator/llm:/workspace
+      - ./llm:/workspace
     command: sh -c "npm install && npm run start:server"
     ports:
       - "8080:8080"
@@ -50,7 +50,7 @@ services:
     image: node:20
     working_dir: /workspace
     volumes:
-      - ./frontend/hero-app:/workspace
+      - ./frontend:/workspace
     command: sh -c "npm install --legacy-peer-deps && npm run dev -- --host 0.0.0.0"
     ports:
       - "5173:5173"

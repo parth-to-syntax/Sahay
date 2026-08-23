@@ -29,10 +29,10 @@ const slackRandom = process.env.SLACK_RANDOM_CHANNEL_ID || "";
 
 function ensureConfig() {
   if (!bambooCompany || !bambooKey) {
-    throw new Error("Missing BambooHR credentials in services/api-gateway/backend/.env (BAMBOOHR_COMPANY/BAMBOOHR_API_KEY)");
+    throw new Error("Missing BambooHR credentials in backend/.env (BAMBOOHR_COMPANY/BAMBOOHR_API_KEY)");
   }
   if (!slackToken) {
-    throw new Error("Missing SLACK_BOT_TOKEN in services/api-gateway/backend/.env");
+    throw new Error("Missing SLACK_BOT_TOKEN in backend/.env");
   }
 }
 

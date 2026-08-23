@@ -14,13 +14,12 @@ An AI-assisted HR intelligence platform that turns employee context from HRMS re
 ## Repository layout
 
 ```text
-frontend/hero-app/                  React + Vite dashboard
-services/api-gateway/backend/       Express API, MongoDB models, integrations
-services/ai-orchestrator/llm/       Groq analysis, scoring, queues, storage
+frontend/                           React + Vite dashboard
+backend/                            Express API, MongoDB models, integrations
+llm/                                Groq analysis, scoring, queues, storage
 integrations/bamboo-slack-sync/     BambooHR and synthetic Slack pipeline
 scripts/                            Cross-service seed helpers
 docs/                               Architecture, schema, product, and interview docs
-archive/                            Uncertain, legacy, or generated material
 ```
 
 See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for service responsibilities and data flow. See [docs/README_DOCS.md](docs/README_DOCS.md) for the documentation guide.
@@ -37,9 +36,9 @@ See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for service responsibilities an
 ## Install
 
 ```bash
-cd services/api-gateway/backend && npm install
-cd ../../ai-orchestrator/llm && npm install
-cd ../../../frontend/hero-app && npm install
+cd backend && npm install
+cd ../llm && npm install
+cd ../frontend && npm install
 ```
 
 ## Run locally
@@ -48,15 +47,15 @@ Start each service in a separate terminal:
 
 ```bash
 # Terminal 1 — AI orchestrator
-cd services/ai-orchestrator/llm
+cd llm
 npm run start:server
 
 # Terminal 2 — API gateway
-cd services/api-gateway/backend
+cd backend
 npm run dev
 
 # Terminal 3 — frontend
-cd frontend/hero-app
+cd frontend
 npm run dev
 ```
 
@@ -67,7 +66,7 @@ The Vite dashboard normally runs at `http://localhost:5173`. The API gateway def
 Initialize and seed MongoDB through the API gateway:
 
 ```bash
-cd services/api-gateway/backend
+cd backend
 npm run db:init
 npm run db:seed-demo
 ```
@@ -89,17 +88,17 @@ The pipeline has a demo fallback when BambooHR credentials are unavailable. Neve
 
 ```bash
 # Frontend quality checks
-cd frontend/hero-app && npm run lint && npm run build
+cd frontend && npm run lint && npm run build
 
-# LLM analysis flows
-cd services/ai-orchestrator/llm
+# Next Gen / LLM analysis flows
+cd llm
 npm run analyze:health
 npm run analyze:retention
 npm run analyze:brief
 npm run simulate:ai-flow
 
 # Full backend seed flow
-cd services/api-gateway/backend && npm run seed:all
+cd backend && npm run seed:all
 ```
 
 ## API overview

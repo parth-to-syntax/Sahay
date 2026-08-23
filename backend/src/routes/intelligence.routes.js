@@ -5,6 +5,7 @@ const { getOrgId } = require('../shared/org');
 const { readTokens } = require('../shared/googleTokenStore');
 const { getOAuth2Client } = require('../connectors/google/googleClient');
 const { listEvents } = require('../connectors/google/googleCalendar');
+const demo = require('../demo/demoData');
 const Document = require('../db/models/Document');
 const Meeting = require('../db/models/meeting');
 const MeetingTranscriptTurn = require('../db/models/MeetingTranscriptTurn');
@@ -696,10 +697,27 @@ async function proxyJson({ req, res, next, method, targetPath, body }) {
 }
 
 router.get('/health', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json(demo.getDemoHealth());
+  }
+
   await proxyJson({ req, res, next, method: 'GET', targetPath: '/health' });
 });
 
 router.get('/ingestion/source-check', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json({
+      ok: true,
+      demoMode: true,
+      data: {
+        sourceSystem: 'demo-fixture',
+        employeeEmail: req.query.employeeEmail ? String(req.query.employeeEmail) : '',
+        historicalMode: String(req.query.historicalMode || '').toLowerCase() === 'true',
+        sources: ['bamboohr', 'meetings', 'slack'],
+      },
+    });
+  }
+
   const params = new URLSearchParams();
   if (req.query.employeeEmail) params.set('employeeEmail', String(req.query.employeeEmail));
   if (req.query.historicalMode !== undefined) params.set('historicalMode', String(req.query.historicalMode));
@@ -709,19 +727,43 @@ router.get('/ingestion/source-check', async (req, res, next) => {
 });
 
 router.get('/dashboard', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json({ ok: true, data: demo.getDashboardSummary() });
+  }
+
   await proxyJson({ req, res, next, method: 'GET', targetPath: '/dashboard' });
 });
 
 router.get('/employees', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json({ ok: true, data: demo.getEmployees() });
+  }
+
   await proxyJson({ req, res, next, method: 'GET', targetPath: '/employees' });
 });
 
 router.get('/employees/:email/profile', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    const profile = demo.getEmployeeProfile(req.params.email);
+    if (!profile) {
+      return res.status(404).json({ ok: false, error: { message: 'employee not found', code: 'NOT_FOUND' } });
+    }
+    return res.json({ ok: true, data: profile });
+  }
+
   const email = encodeURIComponent(String(req.params.email || '').toLowerCase());
   await proxyJson({ req, res, next, method: 'GET', targetPath: `/employees/${email}/profile` });
 });
 
 router.get('/employees/:email/history', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    const history = demo.getEmployeeHistory(req.params.email, req.query.limit);
+    if (!history) {
+      return res.status(404).json({ ok: false, error: { message: 'employee not found', code: 'NOT_FOUND' } });
+    }
+    return res.json(history);
+  }
+
   const normalizedEmail = normalizeEmail(req.params.email);
   const encodedEmail = encodeURIComponent(normalizedEmail);
   const safeLimit = clampHistoryLimit(req.query.limit);
@@ -791,6 +833,17 @@ router.get('/employees/:email/history', async (req, res, next) => {
 });
 
 router.get('/meetings', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json(
+      demo.getDemoMeetingsResponse({
+        employeeEmail: req.query.employeeEmail ? String(req.query.employeeEmail) : '',
+        query: req.query.q ? String(req.query.q) : '',
+        limit: Number(req.query.limit || 20),
+        includeNonHr: String(req.query.includeNonHr || '').trim().toLowerCase() === 'true',
+      })
+    );
+  }
+
   try {
     const employeeEmail = req.query.employeeEmail ? String(req.query.employeeEmail) : '';
     const query = req.query.q ? String(req.query.q) : '';
@@ -831,6 +884,23 @@ router.get('/meetings', async (req, res, next) => {
 });
 
 router.post('/meetings/refresh-google', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json({
+      ok: true,
+      data: {
+        ingestion: demo.getDemoIngestionSummary('calendar', {
+          calendarId: String(req.body?.calendarId || req.query.calendarId || 'primary'),
+        }).data,
+        meetings: demo.getDemoMeetingsResponse({
+          employeeEmail: req.body?.employeeEmail ? String(req.body.employeeEmail) : '',
+          query: req.body?.q ? String(req.body.q) : '',
+          limit: Number(req.body?.limit || req.query.limit || 20),
+          includeNonHr: String(req.body?.includeNonHr ?? req.query.includeNonHr ?? '').trim().toLowerCase() === 'true',
+        }),
+      },
+    });
+  }
+
   try {
     const orgId = getOrgId(req);
     const calendarId = String(req.body?.calendarId || req.query.calendarId || 'primary');
@@ -875,6 +945,14 @@ router.post('/meetings/refresh-google', async (req, res, next) => {
 });
 
 router.get('/meetings/:id/transcript', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    const transcript = demo.getMeetingTranscript(req.params.id, req.query.q ? String(req.query.q) : '');
+    if (!transcript) {
+      return res.status(404).json({ error: 'meeting not found' });
+    }
+    return res.json(transcript);
+  }
+
   try {
     const meetingIdRaw = String(req.params.id || '');
     if (meetingIdRaw.startsWith('gcal:')) {
@@ -972,18 +1050,45 @@ router.get('/meetings/:id/transcript', async (req, res, next) => {
 });
 
 router.post('/briefs/upcoming', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    const brief = demo.buildBriefForEmployee(
+      req.body?.employeeEmail,
+      req.body?.meetingAt,
+      Array.isArray(req.body?.participantEmails) ? req.body.participantEmails : []
+    );
+    return res.json(brief || { ok: true, brief: null, message: 'No demo brief available.' });
+  }
+
   await proxyJson({ req, res, next, method: 'POST', targetPath: '/briefs/upcoming', body: req.body || {} });
 });
 
 router.post('/chat/query', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json(demo.queryChat(req.body?.query, req.body?.sessionId));
+  }
+
   await proxyJson({ req, res, next, method: 'POST', targetPath: '/chat/query', body: req.body || {} });
 });
 
 router.post('/chat/sessions', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json({ ok: true, data: demo.createChatSession(req.body?.sessionId) });
+  }
+
   await proxyJson({ req, res, next, method: 'POST', targetPath: '/chat/sessions', body: req.body || {} });
 });
 
 router.get('/chat/sessions', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json({
+      ok: true,
+      data: demo.listChatSessions({
+        limit: req.query.limit,
+        status: req.query.status,
+      }),
+    });
+  }
+
   const params = new URLSearchParams();
   if (req.query.limit) params.set('limit', String(req.query.limit));
   if (req.query.status) params.set('status', String(req.query.status));
@@ -999,6 +1104,14 @@ router.get('/chat/sessions', async (req, res, next) => {
 });
 
 router.patch('/chat/sessions/:sessionId', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    const updated = demo.updateChatSession(req.params.sessionId, req.body || {});
+    if (!updated) {
+      return res.status(404).json({ ok: false, error: { message: 'session not found', code: 'NOT_FOUND' } });
+    }
+    return res.json({ ok: true, data: updated });
+  }
+
   const sessionId = encodeURIComponent(String(req.params.sessionId || ''));
   await proxyJson({
     req,
@@ -1011,6 +1124,14 @@ router.patch('/chat/sessions/:sessionId', async (req, res, next) => {
 });
 
 router.delete('/chat/sessions/:sessionId', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    const deleted = demo.deleteChatSession(req.params.sessionId);
+    if (!deleted) {
+      return res.status(404).json({ ok: false, error: { message: 'session not found', code: 'NOT_FOUND' } });
+    }
+    return res.json({ ok: true, data: deleted });
+  }
+
   const sessionId = encodeURIComponent(String(req.params.sessionId || ''));
   await proxyJson({
     req,
@@ -1022,6 +1143,10 @@ router.delete('/chat/sessions/:sessionId', async (req, res, next) => {
 });
 
 router.get('/chat/sessions/:sessionId/history', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json(demo.getChatSessionHistory(req.params.sessionId));
+  }
+
   const sessionId = encodeURIComponent(String(req.params.sessionId || ''));
   const params = new URLSearchParams();
   if (req.query.limit) params.set('limit', String(req.query.limit));
@@ -1037,10 +1162,22 @@ router.get('/chat/sessions/:sessionId/history', async (req, res, next) => {
 });
 
 router.post('/pipeline/run', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json(demo.getDemoIngestionSummary('pipeline', {
+      reason: req.body?.reason,
+    }));
+  }
+
   await proxyJson({ req, res, next, method: 'POST', targetPath: '/pipeline/run', body: req.body || {} });
 });
 
 router.post('/pipeline/sync-bamboohr', async (req, res, next) => {
+  if (demo.isDemoMode()) {
+    return res.json(demo.getDemoIngestionSummary('bambooSync', {
+      reason: req.body?.reason,
+    }));
+  }
+
   await proxyJson({ req, res, next, method: 'POST', targetPath: '/pipeline/sync-bamboohr', body: req.body || {} });
 });
 

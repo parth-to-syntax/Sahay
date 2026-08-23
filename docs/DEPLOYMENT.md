@@ -4,13 +4,13 @@ This repository contains independently runnable services. A production-style dep
 
 ## Frontend
 
-Deploy `frontend/hero-app/` to Vercel or another static frontend host.
+Deploy `frontend/` to Vercel or another static frontend host.
 
 Configure `VITE_BACKEND_BASE_URL` and `VITE_ORG_ID`.
 
 ## API gateway
 
-Deploy `services/api-gateway/backend/` to Render, AWS ECS, or a comparable Node.js service host.
+Deploy `backend/` to Render, AWS ECS, or a comparable Node.js service host.
 
 Configure the required values by environment, including `PORT`, `CORS_ORIGIN`, `MONGODB_URI` or `MONGO_URI`, `LLM_BASE_URL`, `BAMBOOHR_COMPANY`, `BAMBOOHR_API_KEY`, `SLACK_BOT_TOKEN`, and the Google OAuth/calendar credential names used by the connector.
 
@@ -20,7 +20,7 @@ Use MongoDB Atlas for managed MongoDB. Set the connection string through `MONGOD
 
 ## AI orchestrator
 
-Deploy `services/ai-orchestrator/llm/` to Render, AWS ECS, or another Node.js service host.
+Deploy `llm/` to Render, AWS ECS, or another Node.js service host.
 
 Configure `PORT`, `MONGO_URI`, `MONGO_DB`, `GROQ_API_KEY`, `GROQ_MODEL`, `GROQ_DISPATCH_MODE`, `QUEUE_MODE`, `REDIS_URL`, `DATA_ROOT`, `USE_MEMORY_STORE`, `USE_MEMORY_CACHE`, and `SLACK_BOT_TOKEN`.
 

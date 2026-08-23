@@ -20,7 +20,7 @@ function getBackendEnv() {
     return backendEnvCache;
   }
 
-  const backendEnvPath = path.resolve(__dirname, "../../../../../api-gateway/backend/.env");
+  const backendEnvPath = path.resolve(__dirname, "../../../../backend/.env");
   if (!fs.existsSync(backendEnvPath)) {
     backendEnvCache = {};
     return backendEnvCache;

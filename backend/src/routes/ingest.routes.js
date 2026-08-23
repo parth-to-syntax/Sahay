@@ -5,6 +5,7 @@ const { connectMongo } = require('../db/mongo');
 const { getOrgId, getAsOf } = require('../shared/org');
 const { normalizeEmail } = require('../shared/pii');
 const { HttpError } = require('../shared/errors');
+const demo = require('../demo/demoData');
 
 const { getEmployeeDirectory, getEmployeeById } = require('../connectors/bamboohr/bamboohrClient');
 const {
@@ -346,6 +347,10 @@ router.get('/cursors', async (req, res, next) => {
 // POST /api/ingest/slack/channels?snapshotAt=YYYY-MM-DD&incremental=true
 router.post('/slack/channels', async (req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      return res.json(demo.getDemoIngestionSummary('slackChannels'));
+    }
+
     await ensureMongoConnected();
 
     const orgId = getOrgId(req);
@@ -468,6 +473,14 @@ router.post('/slack/channels', async (req, res, next) => {
 // POST /api/ingest/slack/channels/:channelId/messages?incremental=true&daysBack=7&includeReplies=false
 router.post('/slack/channels/:channelId/messages', async (req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      return res.json(
+        demo.getDemoIngestionSummary('slackMessages', {
+          channelId: String(req.params.channelId || 'general'),
+        })
+      );
+    }
+
     await ensureMongoConnected();
 
     const orgId = getOrgId(req);
@@ -690,6 +703,25 @@ router.post('/slack/channels/:channelId/messages', async (req, res, next) => {
 // POST /api/ingest/bamboohr/directory?snapshotAt=YYYY-MM-DD
 router.post('/bamboohr/directory', async (req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      const employees = demo.getEmployees();
+      return res.json({
+        ok: true,
+        data: {
+          orgId: getOrgId(req),
+          snapshotAt: getAsOf(req).toISOString(),
+          employeesSeen: employees.length,
+          employeesUpserted: employees.length,
+          employeesSkippedUnchanged: 0,
+          identitySnapshotsUpserted: employees.length,
+          employmentSnapshotsUpserted: employees.length,
+          identityCountByField: { hasEmail: employees.length },
+          directoryDocumentId: 'demo-bamboohr-directory',
+          demoMode: true,
+        },
+      });
+    }
+
     await ensureMongoConnected();
 
     const orgId = getOrgId(req);
@@ -950,6 +982,20 @@ router.post('/bamboohr/directory', async (req, res, next) => {
 // POST /api/ingest/bamboohr/employees/:id?fields=field1,field2&snapshotAt=YYYY-MM-DD
 router.post('/bamboohr/employees/:id', async (req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      return res.json({
+        ok: true,
+        data: {
+          orgId: getOrgId(req),
+          employeeId: String(req.params.id || ''),
+          bamboohrEmployeeId: String(req.params.id || ''),
+          snapshotAt: getAsOf(req).toISOString(),
+          hrmsProfileDocumentId: `demo-bamboohr-profile-${String(req.params.id || '')}`,
+          demoMode: true,
+        },
+      });
+    }
+
     await ensureMongoConnected();
 
     const orgId = getOrgId(req);
@@ -1148,6 +1194,10 @@ router.post('/bamboohr/employees/:id', async (req, res, next) => {
 // POST /api/ingest/slack/users?snapshotAt=YYYY-MM-DD
 router.post('/slack/users', async (req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      return res.json(demo.getDemoIngestionSummary('slackUsers'));
+    }
+
     await ensureMongoConnected();
 
     const orgId = getOrgId(req);
@@ -1389,6 +1439,14 @@ router.post('/slack/users', async (req, res, next) => {
 // POST /api/ingest/calendar/events?calendarId=primary&pastDays=14&futureDays=7
 router.post('/calendar/events', async (req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      return res.json(
+        demo.getDemoIngestionSummary('calendar', {
+          calendarId: String(req.query.calendarId || 'primary'),
+        })
+      );
+    }
+
     await ensureMongoConnected();
 
     const orgId = getOrgId(req);
@@ -1581,6 +1639,10 @@ router.post('/calendar/events', async (req, res, next) => {
 // POST /api/ingest/fireflies/transcripts?limit=100&skip=0&fromDate=...&toDate=...&syncHrToCalendar=true
 router.post('/fireflies/transcripts', async (req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      return res.json(demo.getDemoIngestionSummary('fireflies'));
+    }
+
     await ensureMongoConnected();
 
     const orgId = getOrgId(req);
@@ -1806,6 +1868,18 @@ router.post('/fireflies/transcripts', async (req, res, next) => {
 // POST /api/ingest/documents  (generic ingestion + optional chunks)
 router.post('/documents', async (req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      return res.json({
+        ok: true,
+        data: {
+          orgId: getOrgId(req),
+          documentsSeen: Array.isArray(req.body?.documents) ? req.body.documents.length : 0,
+          documentsStored: Array.isArray(req.body?.documents) ? req.body.documents.length : 0,
+          demoMode: true,
+        },
+      });
+    }
+
     await ensureMongoConnected();
 
     const orgId = getOrgId(req);
@@ -1902,6 +1976,17 @@ router.post('/documents', async (req, res, next) => {
 // PUT /api/ingest/external-identities/link
 router.put('/external-identities/link', async (req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      return res.json({
+        ok: true,
+        data: {
+          orgId: getOrgId(req),
+          linkedCount: Array.isArray(req.body?.links) ? req.body.links.length : 0,
+          demoMode: true,
+        },
+      });
+    }
+
     await ensureMongoConnected();
 
     const orgId = getOrgId(req);

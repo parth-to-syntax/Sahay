@@ -36,7 +36,7 @@ def load_env_file(path):
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 load_env_file(os.path.join(SCRIPT_DIR, ".env"))
-load_env_file(os.path.join(SCRIPT_DIR, "..", "..", "services", "api-gateway", "backend", ".env"))
+load_env_file(os.path.join(SCRIPT_DIR, "..", "..", "backend", ".env"))
 
 # ──────────────────────────────────────────────
 # CONFIG — values come from env with sane defaults

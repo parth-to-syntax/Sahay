@@ -2,11 +2,11 @@
 
 ## Setup
 1) Install deps:
-- `cd services/api-gateway/backend`
+- `cd backend`
 - `npm install`
 
 2) Configure env:
-- Create `services/api-gateway/backend/.env` from your local environment configuration.
+- Create `backend/.env` from your local environment configuration.
 
 MongoDB (optional unless you use persistence endpoints like `/api/db/*`):
 - `MONGODB_URI` (e.g. `mongodb://localhost:27017/intellihr`)
@@ -77,19 +77,19 @@ Notes:
 - Rotate any API key that was pasted into chat logs.
 
 ## Capability discovery (quick)
-- Run: `node services/api-gateway/backend/scripts/compareBamboohrSchema.js`
+- Run: `node backend/scripts/compareBamboohrSchema.js`
 	- Compares your desired HRMS schema wishlist against BambooHR `meta/fields` + `employees/directory`.
 
 Quick field discovery:
 - Use `GET /api/bamboohr/schema/search?q=<keyword>` with keywords like `salary`, `bonus`, `time off`, `termination`, `performance`.
 
 ## Slack capability discovery (quick)
-- Run: `node services/api-gateway/backend/scripts/probeSlack.js`
+- Run: `node backend/scripts/probeSlack.js`
 	- Outputs a JSON report with counts + message metadata only (no message text).
 
 ## Slack → BambooHR import (for demo)
 
 This creates BambooHR employee records for Slack users that don't already exist in BambooHR (matched by email).
 
-- Plan (no changes): `node services/api-gateway/backend/scripts/importSlackUsersToBamboohr.js`
+- Plan (no changes): `node backend/scripts/importSlackUsersToBamboohr.js`
 - Apply (creates employees): set `CONFIRM_IMPORT=true` and run the same script.

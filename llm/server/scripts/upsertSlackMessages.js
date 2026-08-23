@@ -5,7 +5,7 @@ import { fetchSlackLive } from "../services/ingestion/fetchSources.js";
 import { initMongo, upsertSlackMessagesBatch } from "../services/storage/stores.js";
 
 dotenv.config({ path: path.join(process.cwd(), ".env") });
-dotenv.config({ path: path.join(process.cwd(), "../../api-gateway/backend/.env") });
+dotenv.config({ path: path.join(process.cwd(), "../backend/.env") });
 
 const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
 const dbName = process.env.MONGO_DB || "chro_intelligence";
@@ -18,7 +18,7 @@ if (!mongoUri) {
 const payload = await fetchSlackLive({ employeeEmail: null, slackCursor: 0 });
 if (!payload) {
   throw new Error(
-    "Live Slack fetch unavailable. Ensure SLACK_BOT_TOKEN and channel ids are configured in the service environment or services/api-gateway/backend/.env"
+    "Live Slack fetch unavailable. Ensure SLACK_BOT_TOKEN and channel ids are configured in the service environment or backend/.env"
   );
 }
 

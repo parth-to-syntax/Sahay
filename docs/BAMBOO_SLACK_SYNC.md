@@ -47,7 +47,7 @@ export BAMBOOHR_API_BASE=https://api.bamboohr.com/api/gateway.php
 python step1_fetch_bamboohr.py
 
 # Or place the same keys in integrations/bamboo-slack-sync/.env
-# (step1 also auto-loads services/api-gateway/backend/.env if present)
+# (step1 also auto-loads backend/.env if present)
 
 # 2. Generate synthetic Slack data
 python step2_generate_slack.py
