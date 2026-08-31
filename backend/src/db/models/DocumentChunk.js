@@ -17,7 +17,10 @@ const DocumentChunkSchema = new mongoose.Schema(
     startMs: { type: Number },
     endMs: { type: Number },
 
-    // Embeddings are stored out-of-band; keep a pointer here.
+    // For semantic RAG (stores the vector natively in MongoDB)
+    embedding: { type: [Number] },
+    
+    // Embeddings are stored out-of-band; keep a pointer here (legacy).
     embeddingVectorId: { type: String, index: true },
 
     sensitivity: { type: String, enum: ['standard', 'sensitive'], default: 'standard' },

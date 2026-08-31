@@ -57,7 +57,7 @@ const INTEGRATION_DEFS = [
     fields: [
       { key: "GOOGLE_CLIENT_ID", label: "GOOGLE_CLIENT_ID", secret: true, placeholder: "...apps.googleusercontent.com" },
       { key: "GOOGLE_CLIENT_SECRET", label: "GOOGLE_CLIENT_SECRET", secret: true, placeholder: "GOCSPX-..." },
-      { key: "GOOGLE_REDIRECT_URI", label: "GOOGLE_REDIRECT_URI", secret: false, placeholder: "http://localhost:4000/api/calendar/google/oauth/callback" },
+      { key: "GOOGLE_REDIRECT_URI", label: "GOOGLE_REDIRECT_URI", secret: false, placeholder: "http://localhost:8080/api/calendar/google/oauth/callback" },
     ],
   },
   {

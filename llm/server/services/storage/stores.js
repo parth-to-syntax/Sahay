@@ -88,6 +88,10 @@ function isMongoReady() {
   return Boolean(mongoDb);
 }
 
+export function getMongoDb() {
+  return mongoDb;
+}
+
 function byAnalyzedAtDesc(a, b) {
   const left = new Date(a?.analyzedAt || 0).getTime();
   const right = new Date(b?.analyzedAt || 0).getTime();

@@ -400,25 +400,45 @@ function buildTranscriptCards(rows) {
     .slice(0, 5);
 }
 
+import { searchSimilarChunks } from "../rag/retrievalService.js";
+
 async function chatAssistantService({ query, rows, model }) {
   const cards = buildTranscriptCards(rows);
-  const context = rows
+  
+  // 1. Perform Semantic Search
+  let retrievedChunks = [];
+  if (query) {
+    try {
+      // In a real multi-tenant app, we'd pass orgId and employeeId from the session/request
+      retrievedChunks = await searchSimilarChunks(query, {});
+    } catch (e) {
+      console.warn("[groq] RAG search failed:", e?.message);
+    }
+  }
+
+  // 2. Format Contexts
+  const relationalContext = rows
     .map(
       (row) =>
         `${row.employeeName} (${row.employeeEmail}) risk=${row?.analysis?.retentionRisk?.level} health=${row?.analysis?.health?.score}`
     )
     .join("\n");
 
+  const ragContext = retrievedChunks.length 
+    ? retrievedChunks.map((c, i) => `[DocumentChunk ${i+1}] ${c.text}`).join("\n\n")
+    : "No semantic context retrieved.";
+
   const fallback = {
     answer: `Found ${rows.length} matching profile(s). Top signals and transcript cards are attached.`,
     transcriptCards: cards,
   };
 
+  // 3. Call Groq with Grounded Prompt
   const payload = await runGroqJson({
     model,
     temperature: TEMPERATURES.chat,
-    system: "You are a CHRO chat assistant. Return JSON {answer:string}.",
-    user: `User query: ${query}\n\nResults:\n${context}\n\nProvide concise guidance.`,
+    system: "You are a CHRO chat assistant. Return JSON {answer:string}.\n\nSYSTEM INSTRUCTIONS:\nAnswer using the retrieved context. Do not invent unsupported information. If the retrieved context is insufficient, say so. Prioritize retrieved evidence. Preserve uncertainty.",
+    user: `RETRIEVED CONTEXT:\n${ragContext}\n\nRELATIONAL DATA:\n${relationalContext}\n\nUSER QUESTION:\n${query}\n\nProvide concise guidance based heavily on the retrieved context.`,
   });
 
   return {
