@@ -14,7 +14,89 @@ SAHAY is an advanced HR Intelligence Platform designed to provide proactive work
 
 ## 🏗️ System Architecture
 
-The application is split into a modern React frontend and a scalable Serverless backend.
+The application is split into a modern React frontend and a scalable Serverless backend, utilizing event-driven microservices.
+
+```mermaid
+graph TD
+    %% Frontend Side
+    subgraph Frontend [Frontend - UI & UX]
+        React[React Vite App]
+        Tailwind[Tailwind CSS & Framer]
+        Router[React Router DOM]
+        React -.-> Tailwind
+        React -.-> Router
+    end
+
+    %% External Services
+    subgraph External [Third-Party Integrations]
+        BambooHR[BambooHR API]
+        Slack[Slack API]
+        Fireflies[Fireflies API]
+    end
+
+    %% Backend API Gateway
+    subgraph APIGateway [AWS API Gateway]
+        HTTPAPI[HTTP API]
+    end
+
+    %% Backend Serverless Functions
+    subgraph Backend [Serverless Backend]
+        BackendAPI[Backend API Lambda]
+        LLMAPI[LLM API Lambda]
+    end
+
+    %% Queues for Async Processing
+    subgraph Queues [AWS SQS Queues]
+        IngestQueue[Pipeline Ingestion Queue]
+        AnalysisQueue[Pipeline Analysis Queue]
+    end
+
+    %% Workers
+    subgraph Workers [Async Worker Lambdas]
+        IngestWorker[Ingestion Worker Lambda]
+        AnalyzeWorker[Analysis Worker Lambda]
+    end
+
+    %% AI & Database
+    subgraph DataAI [Data & AI Layer]
+        MongoDB[(MongoDB)]
+        GroqLLM[Groq API / LLM]
+    end
+
+    %% Connections
+    Frontend -- HTTP Requests --> HTTPAPI
+    HTTPAPI -- Proxy --> BackendAPI
+    HTTPAPI -- /llm Proxy --> LLMAPI
+
+    BackendAPI -- Read/Write --> MongoDB
+    BackendAPI -- Enqueue --> IngestQueue
+    BackendAPI -- Fetch Data --> External
+
+    LLMAPI -- Prompt --> GroqLLM
+
+    IngestQueue -- Trigger --> IngestWorker
+    IngestWorker -- Enqueue --> AnalysisQueue
+    IngestWorker -- Fetch Sync --> External
+    IngestWorker -- Store Raw Data --> MongoDB
+
+    AnalysisQueue -- Trigger --> AnalyzeWorker
+    AnalyzeWorker -- Process/Sentiment --> GroqLLM
+    AnalyzeWorker -- Update Insights --> MongoDB
+    
+    classDef frontend fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:#fff;
+    classDef aws fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff;
+    classDef lambda fill:#f97316,stroke:#ea580c,stroke-width:2px,color:#fff;
+    classDef db fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff;
+    classDef external fill:#6366f1,stroke:#4f46e5,stroke-width:2px,color:#fff;
+    classDef ai fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff;
+
+    class React,Tailwind,Router frontend;
+    class HTTPAPI,IngestQueue,AnalysisQueue aws;
+    class BackendAPI,LLMAPI,IngestWorker,AnalyzeWorker lambda;
+    class MongoDB db;
+    class BambooHR,Slack,Fireflies external;
+    class GroqLLM ai;
+```
 
 ### Frontend
 - **Framework**: React (built with Vite)

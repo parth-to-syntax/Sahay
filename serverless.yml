@@ -16,7 +16,7 @@ provider:
     MONGO_URI: ${env:MONGO_URI}
     DEMO_MODE: "true"
     GROQ_API_KEY: ${env:GROQ_API_KEY}
-    CORS_ORIGIN: ${env:CORS_ORIGIN}
+    CORS_ORIGIN: "http://localhost:5173,https://sahay-six.vercel.app,https://sahay-git-main-jkbs-projects-cbf27869.vercel.app,https://sahay-czi3eg9h8-jkbs-projects-cbf27869.vercel.app"
     QUEUE_MODE: "sqs"
     SQS_INGESTION_QUEUE_URL: !Ref IngestionQueue
     SQS_ANALYSIS_QUEUE_URL: !Ref AnalysisQueue
