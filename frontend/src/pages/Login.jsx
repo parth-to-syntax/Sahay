@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
 
@@ -52,6 +52,16 @@ function AuthVideo() {
 
 export function Login() {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("emp1");
+  const [password, setPassword] = useState("emp123");
+
+  const handleLogin = () => {
+    if (username === "emp1" && password === "emp123") {
+      navigate("/dashboard");
+    } else {
+      alert("Invalid credentials. Please use emp1 and emp123");
+    }
+  };
 
   return (
     <div
@@ -101,8 +111,10 @@ export function Login() {
             <div style={{ position: "relative" }}>
               <Mail style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "15px", height: "15px", color: "#9ca3af" }} />
               <input
-                type="email"
-                placeholder="you@company.com"
+                type="text"
+                placeholder="emp1"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 style={{
                   width: "100%", paddingLeft: "38px", paddingRight: "14px",
                   paddingTop: "10px", paddingBottom: "10px",
@@ -121,7 +133,9 @@ export function Login() {
               <Lock style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "15px", height: "15px", color: "#9ca3af" }} />
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder="emp123"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 style={{
                   width: "100%", paddingLeft: "38px", paddingRight: "14px",
                   paddingTop: "10px", paddingBottom: "10px",
@@ -137,7 +151,7 @@ export function Login() {
 
         {/* Submit */}
         <button
-          onClick={() => navigate("/dashboard")}
+          onClick={handleLogin}
           style={{
             marginTop: "20px",
             width: "100%",
@@ -160,19 +174,6 @@ export function Login() {
           Login
         </button>
 
-        {/* Divider */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", margin: "20px 0" }}>
-          <div style={{ flex: 1, borderTop: "1px solid #f0f0f0" }} />
-          <span style={{ fontSize: "12px", color: "#9ca3af" }}>or</span>
-          <div style={{ flex: 1, borderTop: "1px solid #f0f0f0" }} />
-        </div>
-
-        <p style={{ textAlign: "center", fontSize: "13px", color: "#6b7280" }}>
-          Don&apos;t have an account?{" "}
-          <Link to="/signup" style={{ color: "#1f7a6c", fontWeight: 600, textDecoration: "none" }}>
-            Sign up
-          </Link>
-        </p>
       </div>
     </div>
   );

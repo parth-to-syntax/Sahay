@@ -17,8 +17,13 @@ router.get('/meta/fields', async (_req, res, next) => {
   }
 });
 
+const demo = require('../demo/demoData');
+
 router.get('/employees/directory', async (_req, res, next) => {
   try {
+    if (demo.isDemoMode()) {
+      return res.json({ ok: true, data: { employees: demo.getEmployees() } });
+    }
     const data = await getEmployeeDirectory();
     // Avoid returning full directory if huge; still okay for dev.
     res.json({ ok: true, data });

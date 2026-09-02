@@ -4,7 +4,7 @@ import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { Dashboard } from "./pages/Dashboard";
 import { Login } from "./pages/Login";
-import { Signup } from "./pages/Signup";
+
 import { Employees } from "./pages/Employees";
 import { EmployeeProfile } from "./pages/EmployeeProfile";
 import { Chatbot } from "./pages/Chatbot";
@@ -68,7 +68,7 @@ function AnimatedRoutes() {
 
         {/* Auth — self-contained full-screen */}
         <Route path="/login" element={<RouteTransition><Login /></RouteTransition>} />
-        <Route path="/signup" element={<RouteTransition><Signup /></RouteTransition>} />
+
 
         {/* Authenticated app — navbar visible */}
         <Route path="/dashboard" element={<RouteTransition><AppLayout><Dashboard /></AppLayout></RouteTransition>} />

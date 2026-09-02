@@ -272,15 +272,15 @@ export function Employees() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department / Role</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Manager</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joining Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Meeting</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Meetings</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sentiment Score</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee Name</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department / Role</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Manager</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joining Date</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Meeting</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Meetings</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sentiment Score</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk</th>
+                <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -290,33 +290,33 @@ export function Employees() {
                   onClick={() => person.email && navigate(`/employees/${encodeURIComponent(person.email)}`)}
                   className={`transition-colors duration-150 ${person.email ? "hover:bg-[#1f7a6c]/5 cursor-pointer" : ""}`}
                 >
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 py-3">
                     <div className="flex items-center">
                       <div className="shrink-0 h-10 w-10 rounded-full bg-[#1f7a6c]/10 flex items-center justify-center text-[#1f7a6c] font-medium text-sm">
                         {person.name.split(" ").map((n) => n[0]).join("")}
                       </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{person.name}</div>
-                        <div className="text-sm text-gray-500">{person.email}</div>
+                      <div className="ml-3">
+                        <div className="text-sm font-medium text-gray-900 leading-tight">{person.name}</div>
+                        <div className="text-[11px] text-gray-500 truncate max-w-[120px]" title={person.email}>{person.email}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{person.dept}</div>
-                    <div className="text-sm text-gray-500">{person.role}</div>
+                  <td className="px-3 py-3 text-sm">
+                    <div className="text-gray-900 leading-tight">{person.dept}</div>
+                    <div className="text-[11px] text-gray-500">{person.role}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{person.manager}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{person.joinDate}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{person.lastMeeting}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{person.totalMeetings}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-3 py-3 text-xs text-gray-500 break-words">{person.manager}</td>
+                  <td className="px-3 py-3 text-xs text-gray-500 whitespace-nowrap">{person.joinDate}</td>
+                  <td className="px-3 py-3 text-xs text-gray-500 max-w-[100px] truncate" title={person.lastMeeting}>{person.lastMeeting}</td>
+                  <td className="px-3 py-3 text-xs text-gray-500">{person.totalMeetings}</td>
+                  <td className="px-3 py-3 text-sm text-gray-500">
                     <div>{Number.isFinite(Number(person.sentimentScoreRaw)) ? `${Math.round(Number(person.sentimentScoreRaw))}/100` : "--"}</div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-[11px] text-gray-400">
                       Health: {Number.isFinite(Number(person.healthScore)) ? `${Math.round(Number(person.healthScore))}/100` : "--"}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <span className={`px-2.5 py-1 inline-flex text-xs leading-5 font-medium rounded-full ${
+                  <td className="px-3 py-3 text-sm text-gray-500">
+                    <span className={`px-2 py-0.5 inline-flex text-[11px] leading-5 font-medium rounded-full ${
                       person.risk === "Critical" ? "bg-red-100 text-red-800"
                       : person.risk === "High" ? "bg-amber-100 text-orange-800"
                       : person.risk === "Medium" ? "bg-yellow-100 text-yellow-800"
@@ -325,7 +325,7 @@ export function Employees() {
                       {person.risk || "Low"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-3 py-3 text-sm text-gray-500">
                     <button
                       type="button"
                       onClick={(event) => {
@@ -333,10 +333,10 @@ export function Employees() {
                         handleRefreshEmployee(person);
                       }}
                       disabled={!person.email || Boolean(refreshingByEmail[String(person.email).toLowerCase()])}
-                      className="inline-flex items-center gap-2 rounded-md border border-[#1f7a6c]/30 px-3 py-1.5 text-xs font-medium text-[#1f7a6c] hover:bg-[#1f7a6c]/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-[#1f7a6c]/30 px-2 py-1 text-[11px] font-medium text-[#1f7a6c] hover:bg-[#1f7a6c]/10 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     >
                       <RefreshCw
-                        className={`w-3.5 h-3.5 ${Boolean(refreshingByEmail[String(person.email).toLowerCase()]) ? "animate-spin" : ""}`}
+                        className={`w-3 h-3 ${Boolean(refreshingByEmail[String(person.email).toLowerCase()]) ? "animate-spin" : ""}`}
                       />
                       {getRefreshButtonLabel(String(person.email || "").toLowerCase())}
                     </button>

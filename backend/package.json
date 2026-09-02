@@ -9,10 +9,11 @@
     "start": "PORT=8080 node src/server.js",
     "db:init": "node src/scripts/initMongo.js",
     "db:seed-demo": "node src/scripts/seedDemoData.js",
-    "seed:all": "node ../../../scripts/run_seed_all.js --baseUrl http://localhost:8080 --orgId demo --seedDocumentsAndMemory true --seedDemoCollections true --ingestSlackMessages true"
+    "seed:all": "node ../scripts/run_seed_all.js --baseUrl https://p86qybtx0h.execute-api.us-east-1.amazonaws.com --orgId demo --seedDocumentsAndMemory true --seedDemoCollections true --ingestSlackMessages true"
   },
   "dependencies": {
     "@slack/web-api": "^7.15.0",
+    "@vendia/serverless-express": "^4.12.6",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

@@ -11,9 +11,9 @@ export function CTAButtons() {
       transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
       className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10"
     >
-      {/* Primary CTA → /signup */}
+      {/* Primary CTA → /login */}
       <button
-        onClick={() => navigate("/signup")}
+        onClick={() => navigate("/login")}
         className="px-8 py-3.5 bg-[#f8f8f8] hover:bg-white text-[#171717] rounded-[2px] font-medium transition-colors duration-300 w-full sm:w-auto"
       >
         Get Started

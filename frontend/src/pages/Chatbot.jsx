@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Send, Bot, User, Menu, Loader2, Filter, FileText, Plus, Trash2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -65,6 +65,11 @@ export function Chatbot() {
   const [sessionId, setSessionId] = useState("");
   const [sessions, setSessions] = useState([]);
   const [messages, setMessages] = useState(DEFAULT_MESSAGES);
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isSending]);
 
   useEffect(() => {
     let isMounted = true;
@@ -607,6 +612,7 @@ export function Chatbot() {
             </motion.div>
           )}
           </AnimatePresence>
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Bottom Panel - Input & Suggestions */}

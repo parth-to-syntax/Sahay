@@ -1,5 +1,4 @@
-import { Queue, Worker } from "bullmq";
-import Redis from "ioredis";
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 
 import { normalizeUnifiedSchema } from "../services/normalization/unifiedSchema.js";
 import { fetchAllSourcesParallelWithDelta } from "../services/ingestion/fetchSources.js";
@@ -32,13 +31,11 @@ import { warmProfileCache, warmDashboardCache } from "../services/cache/cacheSer
 const QUEUE_INGESTION = "pipeline-ingestion";
 const QUEUE_ANALYSIS = "pipeline-analysis";
 
-let connection = null;
-let ingestionQueue = null;
-let analysisQueue = null;
-let ingestionWorker = null;
-let analysisWorker = null;
-let queueMode = "inline";
+let queueMode = process.env.QUEUE_MODE || "inline";
 const debounceTimers = new Map();
+const sqsClient = new SQSClient({ region: process.env.AWS_REGION || "us-east-1" });
+const INGESTION_QUEUE_URL = process.env.SQS_INGESTION_QUEUE_URL || "";
+const ANALYSIS_QUEUE_URL = process.env.SQS_ANALYSIS_QUEUE_URL || "";
 
 function getScoringMode() {
   const raw = String(process.env.SCORING_MODE || "hybrid").toLowerCase();
@@ -554,178 +551,116 @@ async function runInlinePipeline({ dataRoot, employeeEmail, reason, model, meeti
   return runAnalysisPipeline({ unified, rawSources, employeeEmail, reason, model, meetingAt });
 }
 
-async function startPipelineQueues({ redisUrl, dataRoot, model, mode = "auto" }) {
-  const forceInline = mode === "inline";
+export async function handleIngestionJob(jobData, { dataRoot, model }) {
+  const employeeEmail = String(jobData.employeeEmail || "").toLowerCase();
+  const reason = jobData.reason || "manual";
+  const syncState = await getSyncState(employeeEmail);
+  const historicalMode = shouldUseHistoricalReplay(reason) || Boolean(jobData.historicalMode);
+  
+  let rawSources = await fetchAllSourcesParallelWithDelta({
+    dataRoot, employeeEmail, cursors: syncState, historicalMode,
+    injectedSlackEvent: jobData.injectedSlackEvent || null,
+  });
 
-  if (!forceInline) {
-    try {
-      connection = new Redis(redisUrl, {
-        maxRetriesPerRequest: null,
-        lazyConnect: true,
-        enableReadyCheck: false,
-        retryStrategy: () => null,
-      });
-      connection.on("error", () => {
-        // Suppress noisy unhandled event logs when Redis is down.
-      });
-      await connection.connect();
-      await connection.ping();
-
-      ingestionQueue = new Queue(QUEUE_INGESTION, { connection });
-      analysisQueue = new Queue(QUEUE_ANALYSIS, { connection });
-
-      ingestionWorker = new Worker(
-        QUEUE_INGESTION,
-        async (job) => {
-          const employeeEmail = String(job.data.employeeEmail || "").toLowerCase();
-          const reason = job.data.reason || "manual";
-
-          const syncState = await getSyncState(employeeEmail);
-          const historicalMode = shouldUseHistoricalReplay(reason) || Boolean(job.data.historicalMode);
-          let rawSources = await fetchAllSourcesParallelWithDelta({
-            dataRoot,
-            employeeEmail,
-            cursors: syncState,
-            historicalMode,
-            injectedSlackEvent: job.data.injectedSlackEvent || null,
-          });
-
-          if (!historicalMode && !hasDeltaData(rawSources)) {
-            const replaySources = await fetchAllSourcesParallelWithDelta({
-              dataRoot,
-              employeeEmail,
-              cursors: syncState,
-              historicalMode: true,
-              injectedSlackEvent: job.data.injectedSlackEvent || null,
-            });
-
-            if (!hasDeltaData(replaySources)) {
-              await updateSyncState(employeeEmail, rawSources.cursors);
-              return {
-                employeeEmail,
-                reason,
-                skipped: true,
-                skipReason: "No delta data available.",
-              };
-            }
-
-            rawSources = replaySources;
-          }
-
-          const identity = pickIdentityCandidate(rawSources, employeeEmail);
-          if (identity) {
-            await upsertEmployeeIdentity(identity);
-          }
-          await updateSyncState(employeeEmail, rawSources.cursors);
-
-          const unified = normalizeUnifiedSchema(rawSources);
-
-          await saveRawDataSnapshot({
-            employeeEmail,
-            reason,
-            fetchedAt: rawSources.fetchedAt,
-            cursors: rawSources.cursors || {},
-            payload: rawSources,
-          });
-
-          await analysisQueue.add(
-            "analyze-profile",
-            {
-              unified,
-              rawSources,
-              employeeEmail,
-              reason,
-              meetingAt: job.data.meetingAt || null,
-            },
-            { removeOnComplete: true, removeOnFail: 100 }
-          );
-
-          return {
-            employeeEmail,
-            reason,
-          };
-        },
-        { connection }
-      );
-
-      analysisWorker = new Worker(
-        QUEUE_ANALYSIS,
-        async (job) => {
-          return runAnalysisPipeline({
-            unified: job.data.unified,
-            rawSources: job.data.rawSources,
-            employeeEmail: job.data.employeeEmail,
-            reason: job.data.reason,
-            model,
-            meetingAt: job.data.meetingAt || null,
-          });
-        },
-        { connection }
-      );
-
-      ingestionWorker.on("failed", (job, error) => {
-        console.error("[queue] ingestion job failed", job?.id, error.message);
-      });
-
-      analysisWorker.on("failed", (job, error) => {
-        console.error("[queue] analysis job failed", job?.id, error.message);
-      });
-
-      queueMode = "bullmq";
-    } catch (error) {
-      if (connection) {
-        try {
-          connection.disconnect();
-        } catch {
-          // no-op
-        }
-      }
-      console.warn("[queue] BullMQ unavailable, using inline fallback:", error.message);
-      queueMode = "inline";
+  if (!historicalMode && !hasDeltaData(rawSources)) {
+    const replaySources = await fetchAllSourcesParallelWithDelta({
+      dataRoot, employeeEmail, cursors: syncState, historicalMode: true,
+      injectedSlackEvent: jobData.injectedSlackEvent || null,
+    });
+    if (!hasDeltaData(replaySources)) {
+      await updateSyncState(employeeEmail, rawSources.cursors);
+      return { employeeEmail, reason, skipped: true, skipReason: "No delta data available." };
     }
-  } else {
-    queueMode = "inline";
+    rawSources = replaySources;
   }
 
+  const identity = pickIdentityCandidate(rawSources, employeeEmail);
+  if (identity) { await upsertEmployeeIdentity(identity); }
+  await updateSyncState(employeeEmail, rawSources.cursors);
+
+  const unified = normalizeUnifiedSchema(rawSources);
+  await saveRawDataSnapshot({
+    employeeEmail, reason, fetchedAt: rawSources.fetchedAt,
+    cursors: rawSources.cursors || {}, payload: rawSources,
+  });
+
+  if (queueMode === "sqs" && ANALYSIS_QUEUE_URL) {
+    await sqsClient.send(new SendMessageCommand({
+      QueueUrl: ANALYSIS_QUEUE_URL,
+      MessageBody: JSON.stringify({
+        unified, rawSources, employeeEmail, reason, meetingAt: jobData.meetingAt || null
+      })
+    }));
+  } else {
+    // Inline fallback if queue is not configured
+    await runAnalysisPipeline({ unified, rawSources, employeeEmail, reason, model, meetingAt: jobData.meetingAt || null });
+  }
+
+  return { employeeEmail, reason };
+}
+
+export async function handleAnalysisJob(jobData, { model }) {
+  return runAnalysisPipeline({
+    unified: jobData.unified, rawSources: jobData.rawSources,
+    employeeEmail: jobData.employeeEmail, reason: jobData.reason,
+    model, meetingAt: jobData.meetingAt || null,
+  });
+}
+
+async function startPipelineQueues({ redisUrl, dataRoot, model, mode = "auto" }) {
+  queueMode = mode === "sqs" ? "sqs" : "inline";
   return {
-    queues: {
-      ingestionQueue,
-      analysisQueue,
-    },
     queueMode,
     runInlinePipeline: (payload) => runInlinePipeline({ dataRoot, model, ...payload }),
   };
 }
 
 async function enqueuePipelineRun({ employeeEmail, reason, dataRoot, model, meetingAt = null }) {
-  if (queueMode === "inline") {
-    const result = await runInlinePipeline({
-      dataRoot,
-      employeeEmail,
-      reason: reason || "manual",
-      model,
-      meetingAt,
-    });
-    return {
-      id: `inline-${Date.now()}`,
-      mode: "inline",
-      result,
-    };
+  if (queueMode === "sqs" && INGESTION_QUEUE_URL) {
+    await sqsClient.send(new SendMessageCommand({
+      QueueUrl: INGESTION_QUEUE_URL,
+      MessageBody: JSON.stringify({
+        employeeEmail, reason: reason || "manual", historicalMode: shouldUseHistoricalReplay(reason), meetingAt
+      })
+    }));
+    return { id: `sqs-${Date.now()}`, mode: "sqs" };
+  }
+  
+  const result = await runInlinePipeline({
+    dataRoot, employeeEmail, reason: reason || "manual", model, meetingAt,
+  });
+  return { id: `inline-${Date.now()}`, mode: "inline", result };
+}
+
+async function enqueueDebouncedSlackReanalysis({ employeeEmail, message, debounceMs, dataRoot, model }) {
+  if (queueMode === "sqs" && INGESTION_QUEUE_URL) {
+    await sqsClient.send(new SendMessageCommand({
+      QueueUrl: INGESTION_QUEUE_URL,
+      MessageBody: JSON.stringify({
+        employeeEmail, reason: "slack-webhook", webhookMessage: message || "",
+        injectedSlackEvent: message ? { text: message, timestamp: Math.floor(Date.now() / 1000), realName: "Webhook User" } : null,
+      })
+    }));
+    return { id: `sqs-debounce-${Date.now()}`, mode: "sqs" };
   }
 
-  return ingestionQueue.add(
-    "fetch-normalize",
-    {
-      employeeEmail,
-      reason: reason || "manual",
-      historicalMode: shouldUseHistoricalReplay(reason),
-      meetingAt,
-    },
-    {
-      removeOnComplete: true,
-      removeOnFail: 100,
+  const key = String(employeeEmail || "").toLowerCase();
+  const existing = debounceTimers.get(key);
+  if (existing) clearTimeout(existing);
+
+  const timeout = setTimeout(async () => {
+    try {
+      await runInlinePipeline({
+        dataRoot, employeeEmail, reason: "slack-webhook", model,
+        injectedSlackEvent: message ? { text: message, timestamp: Math.floor(Date.now() / 1000), realName: "Webhook User" } : null,
+      });
+    } catch (error) {
+      console.error("[queue] inline debounced run failed", error.message);
     }
-  );
+  }, debounceMs);
+
+  debounceTimers.set(key, timeout);
+  return { id: `inline-debounce-${key}`, mode: "inline" };
 }
 
 async function enqueueDebouncedSlackReanalysis({ employeeEmail, message, debounceMs, dataRoot, model }) {

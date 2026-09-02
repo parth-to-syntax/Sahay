@@ -129,7 +129,7 @@ export function HeroSection() {
           initial="hidden" animate="visible" custom={0.3} variants={fadeUp}
         >
           <button
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/login")}
             style={{
               fontFamily: GEIST,
               fontWeight: 500,

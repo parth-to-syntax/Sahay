@@ -36,3 +36,4 @@ response,md
 # Postman
 *.postman_collection.json
 *.postman_environment.json
+.serverless/

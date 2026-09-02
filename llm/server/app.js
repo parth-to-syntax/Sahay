@@ -923,18 +923,24 @@ async function start() {
     console.log("[server] cold boot:", boot);
   }
 
-  app.listen(env.PORT, () => {
-    console.log(`[server] listening on :${env.PORT}`);
-    console.log(`[server] mongo mode: ${mongoInfo.mode}`);
-    console.log(`[server] cache mode: ${cacheInfo.mode}`);
-    console.log(`[server] data root: ${env.DATA_ROOT}`);
-    console.log(`[server] queue mode: ${queueInfo.queueMode}`);
-    console.log(`[server] groq dispatch mode: ${groqDispatchInfo.mode}`);
-    console.log(`[server] groq rpm limit: ${groqDispatchInfo.rpmLimit} (reserve ${Math.max(0, 30 - groqDispatchInfo.rpmLimit)} for demo)`);
-  });
+  if (!process.env.LAMBDA_TASK_ROOT) {
+    app.listen(env.PORT, () => {
+      console.log(`[server] listening on :${env.PORT}`);
+      console.log(`[server] mongo mode: ${mongoInfo.mode}`);
+      console.log(`[server] cache mode: ${cacheInfo.mode}`);
+      console.log(`[server] data root: ${env.DATA_ROOT}`);
+      console.log(`[server] queue mode: ${queueInfo.queueMode}`);
+      console.log(`[server] groq dispatch mode: ${groqDispatchInfo.mode}`);
+      console.log(`[server] groq rpm limit: ${groqDispatchInfo.rpmLimit} (reserve ${Math.max(0, 30 - groqDispatchInfo.rpmLimit)} for demo)`);
+    });
+  }
 }
 
-start().catch((error) => {
-  console.error("[server] startup failed", error.message);
-  process.exit(1);
-});
+export { app, start };
+
+if (!process.env.LAMBDA_TASK_ROOT) {
+  start().catch((error) => {
+    console.error("[server] startup failed", error.message);
+    process.exit(1);
+  });
+}

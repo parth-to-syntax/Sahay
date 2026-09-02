@@ -71,6 +71,10 @@ app.use((err, _req, res, _next) => {
 });
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`[intellihr-backend] listening on :${port}`);
-});
+if (!process.env.LAMBDA_TASK_ROOT) {
+  app.listen(port, () => {
+    console.log(`[intellihr-backend] listening on :${port}`);
+  });
+}
+
+module.exports = app;

@@ -94,9 +94,8 @@ export function Navbar() {
 
         {/* ── Left: Logo + Nav links ── */}
         <div className="flex items-center gap-6">
-          <Link
-            to="/"
-            className={`flex items-center gap-2 text-xl font-bold tracking-tight hover:opacity-80 transition-opacity ${logoColor}`}
+          <div
+            className={`flex items-center gap-2 text-xl font-bold tracking-tight ${logoColor}`}
             style={{ fontFamily: "var(--font-serif)" }}
           >
             <img
@@ -106,7 +105,7 @@ export function Navbar() {
               onError={(e) => { e.currentTarget.style.display = "none"; }}
             />
             <span>SAHAY</span>
-          </Link>
+          </div>
 
           {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-1.5 rounded-full p-1 bg-white/70 border border-[#d7e3e6]">
