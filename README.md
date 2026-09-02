@@ -1,127 +1,74 @@
-# IntelliHR
+# SAHAY - HR Intelligence Platform
 
-An AI-assisted HR intelligence platform that turns employee context from HRMS records, Slack, meetings, and calendar systems into useful preparation for better conversations.
+SAHAY is an advanced HR Intelligence Platform designed to provide proactive workforce management through AI-driven insights. It aggregates data from multiple sources (like BambooHR, Slack, and meeting transcripts via Fireflies) to generate real-time sentiment analysis, meeting summaries, and risk alerts for employees.
 
-## What it does
+## 🚀 Features
+- **Centralized Dashboard**: At-a-glance workforce overview, including total employees, recent meetings, and at-risk personnel.
+- **AI-Powered Insights**: Uses Groq LLMs to analyze communication channels and transcripts for sentiment and health scoring.
+- **Seamless Integrations**: 
+  - **BambooHR**: Syncs employee registry and details.
+  - **Slack**: Ingests team communication to assess mood and engagement.
+  - **Fireflies**: Retrieves and summarizes meeting transcripts.
+- **Background Processing**: Uses AWS SQS and Lambda to handle heavy data ingestion and LLM pipelines asynchronously without blocking the UI.
+- **Actionable Alerts**: Automatically categorizes employee flight risk (Low, Medium, High, Critical) based on their sentiment and activity.
 
-- Provides a unified employee directory and profile view.
-- Surfaces health, sentiment, engagement, and retention-risk signals.
-- Generates meeting briefs with changes, open loops, and conversation prompts.
-- Combines meeting transcripts with HR and communication context.
-- Supports BambooHR, Slack, Google Calendar, and Fireflies ingestion paths.
-- Includes a synthetic-data pipeline for local demonstrations.
+## 🏗️ System Architecture
 
-## Repository layout
+The application is split into a modern React frontend and a scalable Serverless backend.
 
-```text
-frontend/                           React + Vite dashboard
-backend/                            Express API, MongoDB models, integrations
-llm/                                Groq analysis, scoring, queues, storage
-integrations/bamboo-slack-sync/     BambooHR and synthetic Slack pipeline
-scripts/                            Cross-service seed helpers
-docs/                               Architecture, schema, product, and interview docs
-```
+### Frontend
+- **Framework**: React (built with Vite)
+- **Styling**: Tailwind CSS, Lucide React (Icons), Framer Motion (Animations)
+- **Routing**: React Router DOM
 
-See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for service responsibilities and data flow. See [docs/README_DOCS.md](docs/README_DOCS.md) for the documentation guide.
+### Backend
+- **Architecture**: Serverless Framework (AWS Lambda, API Gateway)
+- **Database**: MongoDB
+- **Asynchronous Tasks**: AWS SQS (for handling BambooHR syncs, Slack ingestion, and LLM processing queues)
+- **AI/LLM**: Groq API
 
-## Prerequisites
+## 🛠️ Getting Started
 
-- Node.js 20+
-- npm 10+
-- MongoDB for persistence and seeded demo data
-- Redis for queue-backed AI processing when enabled
-- Python 3.10+ for the optional BambooHR-to-synthetic-Slack pipeline
-- A Groq API key for live LLM analysis; mock/demo flows can run without it
+### Prerequisites
+- Node.js (v18+)
+- AWS CLI (configured for Serverless deployment)
+- MongoDB Cluster
+- API Keys for Groq, Slack, BambooHR, Google (optional)
 
-## Install
+### Local Development
 
-```bash
-cd backend && npm install
-cd ../llm && npm install
-cd ../frontend && npm install
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/parth-to-syntax/Sahay.git
+   cd Sahay
+   ```
 
-## Run locally
+2. **Frontend Setup**
+   ```bash
+   cd frontend
+   npm install
+   # Create a .env file based on .env.example
+   npm run dev
+   ```
+   The frontend will run at `http://localhost:5173`.
 
-Start each service in a separate terminal:
+3. **Backend Setup**
+   ```bash
+   # From the root directory
+   npm install
+   # Configure your .env file with MongoDB URI, AWS credentials, and API keys
+   serverless offline start
+   ```
 
-```bash
-# Terminal 1 — AI orchestrator
-cd llm
-npm run start:server
+## 📦 Deployment
 
-# Terminal 2 — API gateway
-cd backend
-npm run dev
-
-# Terminal 3 — frontend
-cd frontend
-npm run dev
-```
-
-The Vite dashboard normally runs at `http://localhost:5173`. The API gateway defaults to port `4000`, and the AI orchestrator defaults to port `8080`. Set `VITE_BACKEND_BASE_URL` to the API gateway URL and configure service environment files locally.
-
-## Demo data
-
-Initialize and seed MongoDB through the API gateway:
-
-```bash
-cd backend
-npm run db:init
-npm run db:seed-demo
-```
-
-Run the optional synthetic pipeline:
+The backend is configured to be deployed on AWS using the Serverless Framework.
 
 ```bash
-cd integrations/bamboo-slack-sync
-pip install requests python-dateutil
-python step1_fetch_bamboohr.py
-python step2_generate_slack.py
-python step3_seed_database.py
-python step4_verify.py
+serverless deploy
 ```
 
-The pipeline has a demo fallback when BambooHR credentials are unavailable. Never commit real exports, API keys, employee records, or local database files.
+The frontend can be deployed on any static hosting provider like Vercel, Netlify, or AWS S3 + CloudFront.
 
-## Useful commands
-
-```bash
-# Frontend quality checks
-cd frontend && npm run lint && npm run build
-
-# Next Gen / LLM analysis flows
-cd llm
-npm run analyze:health
-npm run analyze:retention
-npm run analyze:brief
-npm run simulate:ai-flow
-
-# Full backend seed flow
-cd backend && npm run seed:all
-```
-
-## API overview
-
-The API gateway exposes health, database, BambooHR, Slack, synchronization, calendar, ingestion, memory, and intelligence routes. Key dashboard endpoints include:
-
-```text
-GET  /health
-GET  /api/intelligence/dashboard
-GET  /api/intelligence/employees
-GET  /api/intelligence/employees/:email/profile
-GET  /api/intelligence/meetings
-POST /api/intelligence/chat/query
-POST /api/intelligence/briefs/upcoming
-POST /api/intelligence/pipeline/run
-```
-
-The complete route contract is in [`public-openapi.yaml`](public-openapi.yaml).
-
-## Product principles
-
-Intelligence is derived context, not a replacement for source records. Analysis should be explainable, permission-aware, and traceable to underlying HR, communication, or meeting evidence. The MVP is designed for one organization while retaining organization scoping in the data model.
-
-## Current status
-
-IntelliHR is an actively developed prototype. Integrations requiring third-party credentials are optional locally, while seeded and synthetic-data paths make the core dashboard and analysis flows demonstrable.
+## 📄 License
+MIT License
